@@ -62,6 +62,6 @@ Browser tests use installed Google Chrome. They check the idle app and backups; 
 
 ## Source and license
 
-GPL-3.0-only. Original game copyright Shaun Williams, with contributions credited by the upstream project. See [THIRD_PARTY.md](THIRD_PARTY.md), [LICENSE](LICENSE), and `third_party/pacman/README.md`.
+GPL-3.0-only. Original game copyright Shaun Williams, with contributions credited by the upstream project. See [THIRD_PARTY.md](THIRD_PARTY.md) and [LICENSE](LICENSE).
 
 `scripts/build-engine.mjs` combines the original sources with our adapter. It omits original startup, input and animation scheduling, silences sound, and disables cutscenes. It adds read-only timer access and removes an audio-only wall-clock callback. Original maze movement, frightened timing, ghost release and scoring are preserved. This is a browser recreation, not a ROM emulator.

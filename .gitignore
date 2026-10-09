@@ -11,4 +11,3 @@ vendor/
 server.log
 server-error.log
 third_party/pacman/*
-
