@@ -1,0 +1,17 @@
+{
+  "name": "pacman-learning-lab",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "GPL-3.0-only",
+  "scripts": {
+    "prepare:engine": "node scripts/build-engine.mjs",
+    "dev": "npm run prepare:engine && vite --host localhost",
+    "build": "npm run prepare:engine && tsc --noEmit && vite build",
+    "test": "npm run prepare:engine && vitest run",
+    "test:browser": "playwright test",
+    "preview": "vite preview --host localhost"
+  },
+  "dependencies": { "@tensorflow/tfjs-core": "4.22.0", "@tensorflow/tfjs-layers": "4.22.0", "@tensorflow/tfjs-backend-cpu": "4.22.0", "@tensorflow/tfjs-backend-webgl": "4.22.0" },
+  "devDependencies": { "@playwright/test": "^1.56.0", "@types/node": "^24.0.0", "typescript": "^5.9.3", "vite": "^8.3.4", "vitest": "^5.0.3" }
+}

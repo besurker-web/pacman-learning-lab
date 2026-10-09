@@ -1,0 +1,14 @@
+node_modules/
+dist/
+test-results/
+playwright-report/
+public/engine/pacman.js
+public/engine/ARCADE_R.TTF
+public/engine/LICENSE
+*.log
+
+vendor/
+server.log
+server-error.log
+third_party/pacman/*
+
