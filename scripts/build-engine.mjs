@@ -15,5 +15,7 @@ code += await readFile(new URL('../src/engine-adapter.js', import.meta.url), 'ut
 code += '\n})();\n';
 await mkdir(new URL('public/engine/', base), { recursive: true });
 await writeFile(new URL('public/engine/pacman.js', base), code);
-await copyFile(new URL('third_party/pacman/font/ARCADE_R.TTF', base), new URL('public/engine/ARCADE_R.TTF', base));
+await copyFile(new URL('third_party/pacman/font/PressStart2P.ttf', base), new URL('public/engine/PressStart2P.ttf', base));
+await copyFile(new URL('third_party/pacman/font/LICENSE.txt', base), new URL('public/engine/FONT-LICENSE.txt', base));
+await copyFile(new URL('third_party/pacman/font/FONTLOG.txt', base), new URL('public/engine/FONTLOG.txt', base));
 await copyFile(new URL('third_party/pacman/LICENSE', base), new URL('public/engine/LICENSE', base));

@@ -44,6 +44,15 @@ describe('Synthetic learning checks only; no game or real training session',()=>
       expect(()=>importJSON('{"version":999}')).toThrow('compatible');
     }finally{a.dispose();b?.dispose();}
   });
+  it('rejects attacker-controlled weight metadata before TensorFlow decodes it',async()=> {
+    const a=new Agent();
+    const dashboard:Dashboard={games:0,deaths:0,timeouts:0,best:0,history:[],speed:'1',nextSeed:1,evaluation:null};
+    try {
+      const cp=await capture(a,dashboard);
+      cp.online.weightSpecs![0]={...cp.online.weightSpecs![0],shape:[Number.MAX_SAFE_INTEGER],dtype:'string'};
+      await expect(restore(cp)).rejects.toThrow('Incompatible model weights');
+    } finally {a.dispose();}
+  });
   it('releases temporary tensors across repeated inference and updates',()=> {
     const a=new Agent();try{a.trainBatch([transition()]);const baseline=tf.memory().numTensors;for(let i=0;i<4;i++){a.action(observation(),false);a.trainBatch([transition()]);}expect(tf.memory().numTensors).toBe(baseline);}finally{a.dispose();}
   });

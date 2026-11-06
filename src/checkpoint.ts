@@ -17,20 +17,31 @@ export function validate(cp:Checkpoint) {
   if(!d || !Array.isArray(d.history)||d.history.length>500 || !['1','5','max'].includes(d.speed) || ![d.games,d.deaths,d.timeouts,d.best,d.nextSeed].every(n=>Number.isSafeInteger(n)&&n>=0) || !d.history.every(e=>[e.score,e.deaths,e.reward,e.seconds,e.clears].every(Number.isFinite)&&typeof e.timeout==='boolean')) throw new Error('Backup statistics are invalid.');
   if(d.evaluation!==null&&(!d.evaluation||d.evaluation.games!==20||![d.evaluation.learned,d.evaluation.random].every(e=>e&&[e.score,e.seconds,e.clears].every(n=>Number.isFinite(n)&&n>=0)))) throw new Error('Backup evaluation is invalid.');
 }
+function decodeFixedWeights(source:tf.io.ModelArtifacts,destination:tf.LayersModel) {
+  if(!source.weightSpecs||!source.weightData||Array.isArray(source.weightData)) throw new Error('Missing model weights');
+  const expected=destination.getWeights();
+  if(source.weightSpecs.length!==expected.length) throw new Error('Incompatible model weights');
+  let expectedBytes=0;
+  const specs=expected.map((tensor,index)=> {
+    const supplied=source.weightSpecs![index];
+    if(tensor.dtype!=='float32'||supplied.dtype!=='float32'||!Array.isArray(supplied.shape)||supplied.shape.length!==tensor.shape.length||supplied.shape.some((size,axis)=>!Number.isSafeInteger(size)||size!==tensor.shape[axis])) throw new Error('Incompatible model weights');
+    expectedBytes+=tensor.size*4;
+    return {name:`weight-${index}`,shape:[...tensor.shape],dtype:'float32' as const};
+  });
+  if(source.weightData.byteLength!==expectedBytes) throw new Error('Incompatible model weights');
+  const decoded=tf.io.decodeWeights(source.weightData,specs);
+  const ordered=specs.map(spec=>decoded[spec.name]);
+  try {
+    if(ordered.some(tensor=>Array.from(tensor.dataSync()).some(value=>!Number.isFinite(value)))) throw new Error('Invalid model weights');
+    destination.setWeights(ordered);
+  } finally {Object.values(decoded).forEach(tensor=>tensor.dispose());}
+}
 export async function restore(cp:Checkpoint) {
   validate(cp);
   const candidate=new Agent();
   try {
     // Fixed architecture: never execute an imported model topology or custom layer.
-    for(const [source,destination] of [[cp.online,candidate.online],[cp.target,candidate.target]] as const) {
-      if(!source.weightSpecs||!source.weightData||Array.isArray(source.weightData)) throw new Error('Missing model weights');
-      const decoded=tf.io.decodeWeights(source.weightData,source.weightSpecs);
-      const ordered=source.weightSpecs.map(spec=>decoded[spec.name]);
-      try {
-        if(ordered.some(t=>Array.from(t.dataSync()).some(v=>!Number.isFinite(v)))) throw new Error('Invalid model weights');
-        destination.setWeights(ordered);
-      } finally { Object.values(decoded).forEach(t=>t.dispose()); }
-    }
+    for(const [source,destination] of [[cp.online,candidate.online],[cp.target,candidate.target]] as const) decodeFixedWeights(source,destination);
     candidate.decisions=cp.decisions;candidate.updates=cp.updates;
     return candidate;
   } catch(error){candidate.dispose();throw error;}

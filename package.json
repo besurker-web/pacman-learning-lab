@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "license": "GPL-3.0-only",
+  "engines": { "node": ">=22.12" },
   "scripts": {
     "prepare:engine": "node scripts/build-engine.mjs",
     "dev": "npm run prepare:engine && vite --host localhost",

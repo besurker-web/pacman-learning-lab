@@ -64,4 +64,6 @@ Browser tests use installed Google Chrome. They check the idle app and backups; 
 
 GPL-3.0-only. Original game copyright Shaun Williams, with contributions credited by the upstream project. See [THIRD_PARTY.md](THIRD_PARTY.md) and [LICENSE](LICENSE).
 
+The Press Start 2P font is distributed separately under the SIL Open Font License 1.1. This educational project is not affiliated with or endorsed by Bandai Namco.
+
 `scripts/build-engine.mjs` combines the original sources with our adapter. It omits original startup, input and animation scheduling, silences sound, and disables cutscenes. It adds read-only timer access and removes an audio-only wall-clock callback. Original maze movement, frightened timing, ghost release and scoring are preserved. This is a browser recreation, not a ROM emulator.

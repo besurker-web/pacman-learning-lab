@@ -3,7 +3,9 @@ dist/
 test-results/
 playwright-report/
 public/engine/pacman.js
-public/engine/ARCADE_R.TTF
+public/engine/PressStart2P.ttf
+public/engine/FONT-LICENSE.txt
+public/engine/FONTLOG.txt
 public/engine/LICENSE
 *.log
 
@@ -11,3 +13,8 @@ vendor/
 server.log
 server-error.log
 third_party/pacman/*
+!third_party/pacman/font/
+third_party/pacman/font/*
+!third_party/pacman/font/PressStart2P.ttf
+!third_party/pacman/font/LICENSE.txt
+!third_party/pacman/font/FONTLOG.txt
